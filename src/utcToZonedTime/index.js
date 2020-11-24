@@ -42,6 +42,10 @@ export default function utcToZonedTime(dirtyDate, timeZone, options) {
   // We just need to apply the offset indicated by the time zone to this localized date
   var offsetMilliseconds = tzParseTimezone(timeZone, utcDate)
 
+  // As in toDate, re-computing the offset at our new target helps correct errors that occur in the vicinity
+  // of time zone changeovers.
+  offsetMilliseconds = tzParseTimezone(timeZone, new Date(date.getTime() + offsetMilliseconds))
+
   return offsetMilliseconds
     ? subMilliseconds(utcDate, offsetMilliseconds)
     : utcDate
